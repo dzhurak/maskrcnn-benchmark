@@ -44,8 +44,7 @@ def do_train(
     device,
     arguments,
 ):
-    logger = logging.getLogger("maskrcnn_benchmark.trainer")
-    logger.debug("Start training")
+    logging.debug("Start training")
     train_meters = MetricLogger(delimiter="  ")
     max_iter = len(train_data_loader)
     start_iter = arguments["iteration"]
@@ -77,22 +76,7 @@ def do_train(
         optimizer.step()
 
         if iteration % 10 == 0 or iteration == max_iter:
-            print(str(train_meters))
-            logger.debug(
-                train_meters.delimiter.join(
-                    [
-                        "iter: {iter}",
-                        "{meters}",
-                        "lr: {lr:.6f}",
-                        "max mem: {memory:.0f}",
-                    ]
-                ).format(
-                    iter=iteration,
-                    meters=str(train_meters),
-                    lr=optimizer.param_groups[0]["lr"],
-                    memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
-                )
-            )
+            logging.debug(train_meters)
 
     test_meters = MetricLogger(delimiter="  ")
     for (images, targets, _) in test_data_loader:
@@ -107,11 +91,11 @@ def do_train(
         test_loss_dict_reduced = reduce_loss_dict(test_loss_dict)
         test_losses_reduced = sum(loss for loss in test_loss_dict_reduced.values())
         test_meters.update(loss=test_losses_reduced, **test_loss_dict_reduced)
-    logger.debug("Test: ", str(test_meters))
+    logging.debug("Test: %s", test_meters)
 
     total_training_time = time.time() - start_training_time
     total_time_str = str(datetime.timedelta(seconds=total_training_time))
-    logger.debug(
+    logging.debug(
         "Total training time: {} ({:.4f} s / it)".format(
             total_time_str, total_training_time / (max_iter)
         )
