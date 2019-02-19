@@ -23,6 +23,7 @@ class Maskrcnn:
         weight_path=None
     ):
         cfg.merge_from_file(config_file)
+        cfg.defrost()
         if weight_path:
             cfg.MODEL.WEIGHT = weight_path
         cfg.freeze()
