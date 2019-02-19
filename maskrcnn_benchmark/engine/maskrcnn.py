@@ -19,9 +19,12 @@ from maskrcnn_benchmark.utils import cv2_util
 class Maskrcnn:
     def __init__(
         self,
-        config_file
+        config_file,
+        weight_path=None
     ):
         cfg.merge_from_file(config_file)
+        if weight_path:
+            cfg.MODEL.WEIGHT = weight_path
         cfg.freeze()
         self.cfg = cfg.clone()
         self.model = build_detection_model(cfg)
