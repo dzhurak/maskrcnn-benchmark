@@ -20,12 +20,12 @@ class Maskrcnn:
     def __init__(
         self,
         config_file,
-        weight_path=None
+        checkpoint_path=None
     ):
         cfg.merge_from_file(config_file)
         cfg.defrost()
-        if weight_path:
-            cfg.MODEL.WEIGHT = weight_path
+        if checkpoint_path:
+            cfg.MODEL.WEIGHT = checkpoint_path
         cfg.freeze()
         self.cfg = cfg.clone()
         self.model = build_detection_model(cfg)
